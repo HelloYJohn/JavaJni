@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/cdt.managedbuild.config.gnu.macosx.exe.debug.52075016/LD_LIBRARY_PATH/delimiter=\:
+environment/project/cdt.managedbuild.config.gnu.macosx.exe.debug.52075016/LD_LIBRARY_PATH/operation=append
+environment/project/cdt.managedbuild.config.gnu.macosx.exe.debug.52075016/LD_LIBRARY_PATH/value=/Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home/jre/lib/server
+environment/project/cdt.managedbuild.config.gnu.macosx.exe.debug.52075016/append=true
+environment/project/cdt.managedbuild.config.gnu.macosx.exe.debug.52075016/appendContributed=true
