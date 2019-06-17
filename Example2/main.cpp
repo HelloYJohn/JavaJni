@@ -18,11 +18,12 @@ int main()
 	//==================== prepare loading of Java VM ============================
 
 	JavaVMInitArgs vm_args;                        // Initialization arguments
-	JavaVMOption* options = new JavaVMOption[2];   // JVM invocation options
+	JavaVMOption* options = new JavaVMOption[3];   // JVM invocation options
 	options[0].optionString = "-Djava.class.path=.:/home/yuanwenxing/eclipse-workspace/JavaExample2/bin/";   // where to find java .class
-	options[1].optionString = "-Xmx256m";
+	options[1].optionString = "-Xmx10m";
+	options[2].optionString = "-Xms10m";
 	vm_args.version = JNI_VERSION_1_6;             // minimum Java version
-	vm_args.nOptions = 2;                          // number of options
+	vm_args.nOptions = 3;                          // number of options
 	vm_args.options = options;
 	vm_args.ignoreUnrecognized = false;     // invalid options make the JVM init fail
 
@@ -69,13 +70,14 @@ int main()
 			env->CallStaticVoidMethod(cls2, mid);                      // call method
 			cout << "===End of call to java==========="<<endl;
 		}
-
+		jboolean jbool[1] = { JNI_FALSE };
 		jmethodID midtestBytes = env->GetStaticMethodID(cls2, "testBytes", "([BI)V");  // find method
 		if(midtestBytes == nullptr)
 			cerr << "ERROR: method void testBytes() not found !" << endl;
 		else {
 			cout << "===Call to testBytes==================" << endl;
-			int length = 738407219;
+			// 3737160
+			int length = 1902966 + 4805896;// 9514832 * 0.2;
 			char* buf = new char[length];
 			for (int i = 0; i < length; i++) {
 				buf[i] = 'a';
@@ -84,6 +86,23 @@ int main()
 			env->SetByteArrayRegion(data, 0, length, reinterpret_cast<jbyte*>(buf));
 			env->CallStaticByteMethod(cls2, midtestBytes, data, length);
 			cout << "===End of call to testBytes==========="<<endl;
+			if (env->ExceptionCheck()) {
+				jthrowable e = env->ExceptionOccurred();
+				// env->ExceptionClear(); // clears the exception; e seems to remain valid
+
+				jclass clazz = env->GetObjectClass(e);
+				jmethodID getMessage = env->GetMethodID(clazz,
+														"getMessage",
+														"()Ljava/lang/String;");
+				jstring message = (jstring)env->CallObjectMethod(e, getMessage);
+				const char *mstr = env->GetStringUTFChars(message, NULL);
+				// do whatever with mstr
+				env->ReleaseStringUTFChars(message, mstr);
+				env->DeleteLocalRef(message);
+				env->DeleteLocalRef(clazz);
+				env->DeleteLocalRef(e);
+			}
+			cout << "JBOOL: " << (jbool[0] == JNI_TRUE) << endl;
 		}
 	}
 	// End JAVA calls ==================================================================
