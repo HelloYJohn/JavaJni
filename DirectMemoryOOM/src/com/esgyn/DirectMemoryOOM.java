@@ -2,10 +2,12 @@ package com.esgyn;
 
 import java.lang.reflect.Field;
 
+import sun.misc.Unsafe;
+
 public class DirectMemoryOOM {
 	private static final int _1MB = 1024 * 1024;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
 		// TODO Auto-generated method stub
 		Field unsafeField = Unsafe.class.getDeclaredFields()[0];
 		unsafeField.setAccessible(true);
